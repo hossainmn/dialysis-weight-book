@@ -1,0 +1,61 @@
+Daftarche Dializ v1.6 - Upload-ready release (2026-10-12)
+=====================================================
+
+FILES (upload this)
+- daftarche-dializ-v1.6.aab (3.4 MB) -> Google Play Console > Production > Create new release. This is THE upload file.
+- daftarche-dializ-v1.6.apk (3.6 MB) -> sideload / WhatsApp test on a real phone before Play review. Same version, same key.
+
+VERSION
+- applicationId: com.example.dializpaper (unchanged so existing installs update)
+- versionCode 7, versionName 1.6 (android/app/build.gradle:10-11)
+- minSdk 22, targetSdk 34, compileSdk 34, AGP 8.2.1
+- Capacitor: core/cli 6.2.2, android 6.2.2, filesystem 6.0.0, share 6.0.0 (aligned, `cap sync` clean)
+
+ICON (new in this build)
+- Blue book+kidney from logo.png / logo-clean-1024.png, background #1D5286
+- Regenerated mipmap-mdpi..xxxhdpi ic_launcher.png / round.png (48/72/96/144/192)
+  + ic_launcher_foreground.png (108/162/216/324/432)
+- values/ic_launcher_background.xml + drawable/ic_launcher_background.xml -> #1D5286 (was white/teal)
+- Verified inside APK: blue pixels present at all densities, pink old icon gone.
+
+SIGNING (do not lose)
+- Key: android/dialysis-release.keystore, alias dialysis, RSA2048, 10000 days, SHA256
+- Passwords: android/keystore-passwords-BACKUP.txt + android/keystore.properties (both gitignored, never commit)
+- APK verifies v1+v2, 1 signer. AAB `jarsigner -verify` = "jar verified" (self-signed upload key is normal; Play re-signs).
+- Future updates MUST use this same keystore+passwords or Play rejects the update.
+
+SECURITY (why it is safe)
+- Offline only. Merged release manifest requests ZERO dangerous permissions.
+  `aapt dump badging` shows only com.example.dializpaper.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION (androidx internal).
+  No INTERNET, no storage, no location. Data stays in private WebView localStorage.
+- android:allowBackup=false, android:usesCleartextTraffic=false (AndroidManifest.xml:5-6).
+- FileProvider exported=false, grantUriPermissions=true. MainActivity exported=true (launcher requirement only).
+- Import path hardened: MainActivity.java caps at 5MB, requires JSON starting with '{' + dialysis markers,
+  uses JSONObject.quote before bridge.eval, closes streams, expires pending after 12s.
+- www/index.html: esc() on all notes/numbers/dates, cleanId strips to [a-zA-Z0-9_-] (32 chars),
+  normalizeEntry re-parses weights, 5MB cap, JSON.parse in try/catch, user must tap confirm in receiveModal.
+  No eval, no document.write, no remote scripts, fonts local.
+- `npm audit` shows 1 high + 1 critical in tar via @capacitor/cli (BUILD TOOL only, not shipped in APK/AAB).
+  Fix would force Capacitor 8 (breaking) - intentionally not applied. No runtime impact.
+- Honest limit: no app is "unhackable". Remaining surface is a malicious .dializ backup file,
+  which cannot auto-run: it is validated, preview-counted, and needs your tap to merge. Keep phone OS updated.
+
+PLAY CHECKLIST (before you hit Publish)
+1. Play Console > Create app > upload daftarche-dializ-v1.6.aab.
+2. Data Safety form: "No data collected, no data shared, offline only, no network".
+3. Privacy policy: state offline, notes stay on device, backups only via user share sheet.
+4. App icon/feature graphic: use logo-clean-1024.png (1024x1024) for store listing.
+5. Note: targetSdk 34. In 2026 Play may require 35 for NEW apps. If Console rejects 34,
+   next step is Capacitor 7 + AGP 8.5 + android-35 platform (bigger migration, test needed).
+6. Keep package name com.example.dializpaper for updates. Renaming later = new listing, old users orphaned.
+7. Rollout: internal testing track first with the .apk, then production.
+
+REPRODUCE
+- cd android; .\gradlew.bat :app:bundleRelease :app:assembleRelease
+- Outputs: app/build/outputs/bundle/release/app-release.aab, app/build/outputs/apk/release/app-release.apk
+- Requires: JDK 17, Android SDK platform-34 + build-tools 34.0.0, android/local.properties sdk.dir, android/keystore.properties
+
+FIX in this rebuild (same version 7/1.6, no device had it installed yet)
+- Removed liquid stretch/bounce when dragging past edges: overscroll-behavior:none
+  on html/body/.table-wrap (www/index.html) + WebView OVER_SCROLL_NEVER
+  (MainActivity.java onCreate). Scrolling now stops dead at the edge.

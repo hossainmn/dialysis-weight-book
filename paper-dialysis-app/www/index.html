@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="theme-color" content="#26262b" />
+<title>دفترچه دیالیز | ثبت وزن</title>
+<!-- Offline-safe: Vazirmatn bundled locally in fonts/, zero permissions needed -->
+<style>
+  /* Local Vazirmatn: arabic subset for Persian, latin subset for digits/symbols */
+  @font-face{font-family:"Vazirmatn";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/vazirmatn-arabic-400-normal.woff2") format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C;}
+  @font-face{font-family:"Vazirmatn";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/vazirmatn-arabic-500-normal.woff2") format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C;}
+  @font-face{font-family:"Vazirmatn";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/vazirmatn-arabic-700-normal.woff2") format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C;}
+  @font-face{font-family:"Vazirmatn";font-style:normal;font-weight:800;font-display:swap;src:url("fonts/vazirmatn-arabic-800-normal.woff2") format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C;}
+  @font-face{font-family:"Vazirmatn";font-style:normal;font-weight:900;font-display:swap;src:url("fonts/vazirmatn-arabic-900-normal.woff2") format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFC,U+200C;}
+  @font-face{font-family:"Vazirmatn";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/vazirmatn-latin-400-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+2000-206F;}
+  @font-face{font-family:"Vazirmatn";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/vazirmatn-latin-700-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+2000-206F;}
+  * { box-sizing: border-box; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    overscroll-behavior: none;
+    font-family: "Vazirmatn", "IRANSansX", "IRANSans", Tahoma, "Segoe UI", system-ui, sans-serif;
+    font-feature-settings: "ss01";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,.06) 0 2px, transparent 3px),
+      linear-gradient(180deg, #26262b, #141416);
+    min-height: 100vh;
+    padding: 18px 12px 40px;
+    color: #222;
+    line-height: 1.7;
+  }
+  .desk-label { text-align: center; color: #bbb; font-size: .8rem; margin-bottom: 10px; }
+  .paper {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #fffdf6;
+    border: 1px solid #d8d0bd;
+    box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  .paper::before {
+    content: "❀";
+    position: absolute; top: -18px; right: -10px;
+    font-size: 140px; line-height: 1;
+    color: rgba(0,0,0,.06);
+    pointer-events: none;
+  }
+  .paper-inner { padding: 24px 20px 18px; position: relative; z-index: 1; }
+  h1 { text-align: center; margin: 4px 0 2px; font-size: 1.75rem; font-weight: 900; letter-spacing: -.2px; }
+  .subtitle { text-align: center; color: #5b5b66; font-size: .95rem; font-weight: 500; margin: 0 0 14px; line-height: 2; }
+
+  .slip {
+    border: 2px dashed #a9a189;
+    background: #fffef9;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .slip-title { font-weight: 800; font-size: 1.1rem; margin: 0 0 8px; }
+  label { display:block; font-size:.92rem; font-weight:600; margin:10px 0 6px; color:#2b2b33; }
+  input, textarea, select {
+    width:100%; font-family:inherit; font-size:17px; font-weight:500;
+    border: 1px solid #c9c2ab;
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 52px;
+    outline:none;
+    background: #fff;
+    color: #1a1a22;
+    line-height: 1.9;
+  }
+  input:focus, textarea:focus, select:focus { border-color:#222; box-shadow:0 0 0 3px rgba(0,0,0,.08); }
+  .row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .row-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(max-width:520px){ .row-2{grid-template-columns:1fr;} }
+  .hint { font-size:.78rem; color:#777; margin-top:4px; }
+  .diff-box {
+    margin-top:10px; border:1px solid #222; border-radius:6px;
+    padding:10px 12px; display:flex; justify-content:space-between; align-items:center;
+    background:#f6f3e7; font-size:.9rem;
+  }
+  .btn {
+    font-family:inherit; border:none; cursor:pointer; border-radius:8px;
+    min-height:52px; font-size:1rem; font-weight:700; width:100%;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-dark { background:#222; color:#fff; margin-top:12px; }
+  .btn-dark:active { transform:scale(.98); }
+  .btn-paper {
+    background:#fff; border:1.5px solid #222; color:#222; min-height:44px; font-size:.88rem; margin-top:8px;
+  }
+  .error { display:none; background:#fee2e2; border:1px solid #fecaca; color:#991b1b; font-size:.85rem; border-radius:8px; padding:10px 12px; margin-top:10px;}
+  .error.show{display:block;}
+
+  .table-wrap { overflow-x:auto; border:1.5px solid #333; background:#fff; }
+  table { width:100%; border-collapse:collapse; min-width:640px; }
+  thead th {
+    background:#e4e4e4;
+    border:1px solid #333;
+    padding:12px 8px; font-size:.92rem; font-weight:800; white-space:nowrap;
+  }
+  tbody td {
+    border:1px solid #555;
+    padding:10px 8px; text-align:center; vertical-align:middle;
+    min-height:56px;
+    background:#fff;
+    font-size:1rem; font-weight:500;
+  }
+  tbody tr:nth-child(even) td { background:#fcfaf2; }
+  tbody td.date-cell { font-weight:800; font-size:1.02rem; white-space:nowrap; }
+  tbody td.num-cell { font-weight:700; font-size:1.08rem; font-variant-numeric: tabular-nums; }
+  /* tap-to-edit affordance: only the tapped cell becomes editable */
+  tbody td.tap-edit { cursor:pointer; }
+  tbody td.tap-edit:active { background:#fff8e1 !important; }
+  tbody td.editing { background:#fff8e1 !important; padding:6px; }
+  tr.editing-row td.tap-edit { cursor:default; }
+  @keyframes tapHint { 0%,100% { background:#fff; } 50% { background:#fff3c4; } }
+  tbody td.hint-pulse { animation: tapHint .7s ease 2; }
+  .note-cell { text-align:right; max-width:260px; word-break:break-word; white-space:pre-wrap; font-size:.95rem; font-weight:500; line-height:2; }
+  .pill { display:inline-block; padding:2px 12px; border:1px solid #333; border-radius:999px; font-weight:700; background:#fff; }
+  .pill.pos { background:#e6f4ea; }
+  .pill.neg { background:#fde8e8; }
+  .icon-btn {
+    background:#fff; border:1px solid #999; border-radius:6px; min-width:42px; height:42px;
+    cursor:pointer; font-size:17px; padding:0 8px;
+  }
+  .actions { display:flex; gap:6px; justify-content:center; }
+  .edit-box textarea { min-height:70px; font-size:15px; margin-bottom:6px; }
+  .edit-box input, .edit-box select { min-height:46px; margin-bottom:6px; }
+  .edit-box select { font-size:15px; font-weight:700; text-align:center; }
+  .edit-date-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:6px; }
+  .edit-num-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:6px; }
+  .edit-hint { font-size:.75rem; color:#777; margin-bottom:6px; }
+  .edit-box .row-btns { display:flex; gap:6px; }
+  .edit-box .row-btns button { flex:1; min-height:44px; border-radius:6px; font-family:inherit; font-weight:700; cursor:pointer; }
+  .edit-box .mini-btns button { min-height:40px; font-size:.85rem; }
+  td.date-cell.editing { min-width:220px; }
+  td.date-cell.editing select { font-size:14px; min-height:44px; }
+  .save-btn { background:#222; color:#fff; border:1px solid #222; }
+  .cancel-btn { background:#fff; border:1px solid #999; }
+  td.after-td.editing { background:#fff8e1 !important; padding:6px; }
+  td.after-td.editing input {
+    min-height:52px; font-size:16px; font-weight:700; text-align:center;
+    border:2px solid #222; border-radius:8px; padding:8px 4px;
+  }
+  .pagination { display:flex; align-items:center; justify-content:center; gap:8px; margin:12px 0 0; flex-wrap:wrap; }
+  .pagination button {
+    font-family:inherit; min-height:44px; min-width:44px; padding:0 14px;
+    border:1.5px solid #222; background:#fff; border-radius:8px;
+    font-weight:800; font-size:.95rem; cursor:pointer;
+  }
+  .pagination button:disabled { opacity:.35; cursor:default; }
+  .pagination button.active { background:#222; color:#fff; }
+  .pagination .page-info { font-weight:700; font-size:.9rem; color:#444; }
+  .empty-paper { padding:26px; text-align:center; color:#777; border-top:1px solid #555; }
+  .errbar {
+    background:#fee2e2; border:2px solid #b91c1c; color:#7f1d1d;
+    border-radius:8px; padding:10px 12px; margin:0 0 12px;
+    font-size:.85rem; font-weight:700;
+  }
+  .paper-footer { margin-top:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:.9rem; }
+  .paper-footer .sign { border-bottom:1px dotted #666; min-width:150px; display:inline-block; height:1.6em; }
+  .tiny { text-align:center; color:#888; font-size:.75rem; margin-top:12px; }
+  .toast {
+    position:fixed; bottom:18px; right:50%; transform:translateX(50%) translateY(20px);
+    background:#111; color:#fff; padding:12px 20px; border-radius:999px;
+    font-size:.9rem; opacity:0; pointer-events:none; transition:.3s; z-index:50; white-space:nowrap;
+  }
+  .toast.show{opacity:1; transform:translateX(50%) translateY(0);}
+  .print-row { margin:12px 0 0; }
+  .print-row button { width:auto; padding:0 22px; }
+  .pdf-row { margin:12px 0 0; }
+  .pdf-row button { width:100%; }
+  .file-row { margin:12px 0 0; }
+  .file-row button { width:100%; }
+  .sheet-opts { display:grid; gap:8px; margin-top:10px; }
+  .sheet-opts .btn { margin-top:0; }
+  .data-row { margin:12px 0 0; display:grid; gap:8px; }
+  .data-row .btn { margin-top:0; }
+  .pdf-modal label { display:block; font-size:.9rem; font-weight:700; margin:10px 0 6px; }
+  .pdf-modal-backdrop {
+    position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:100;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .pdf-modal {
+    background:#fffdf6; border-radius:12px; max-width:420px; width:100%;
+    padding:20px; border:1.5px solid #333; box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .pdf-modal h3 { margin:0 0 8px; font-size:1.15rem; font-weight:800; }
+  .pdf-modal p { margin:8px 0; font-size:.92rem; font-weight:500; }
+  .pdf-modal ol { margin:8px 0; padding-right:20px; font-size:.88rem; line-height:2; }
+  .pdf-modal .row-btns { display:flex; gap:8px; margin-top:12px; }
+  .pdf-modal .row-btns button { flex:1; min-height:50px; border-radius:8px; font-family:inherit; font-weight:800; font-size:.95rem; cursor:pointer; }
+  /* Tap-to-open receive dialog: extra-large touch targets for elderly users */
+  .receive-count {
+    background:#f6f3e7; border:1.5px solid #222; border-radius:10px;
+    padding:14px; text-align:center; font-size:1.05rem; font-weight:800; margin:10px 0;
+  }
+  .receive-count small { display:block; font-size:.82rem; font-weight:500; color:#555; margin-top:4px; }
+  .receive-name { text-align:center; font-size:.8rem; color:#777; word-break:break-all; }
+  .pdf-modal .row-btns .big-ok { min-height:64px; font-size:1.15rem; background:#1a7f37; border:1px solid #1a7f37; color:#fff; }
+  .pdf-modal .row-btns .big-no { min-height:64px; font-size:1.05rem; }
+
+  /* --- Auto-fit: phone / tablet / desktop --- */
+  :root {
+    --app-w: 100vw;
+    --app-h: 100dvh;
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+  }
+  html { height: 100%; overscroll-behavior: none; }
+  /* Fluid root: headings (rem) scale gently with screen width */
+  html.fit-fluid { font-size: clamp(15px, 2.2vw + 12px, 18px); }
+  body.fit-lock {
+    min-height: var(--app-h);
+    min-height: 100dvh;
+    padding-top: calc(8px + var(--sat));
+    padding-bottom: calc(8px + var(--sab));
+    padding-left: calc(12px + var(--sal));
+    padding-right: calc(12px + var(--sar));
+  }
+  body.fit-lock .paper { width: min(860px, 100%); }
+  .tabs { display:flex; gap:8px; margin:0 0 12px; }
+  .tabs button {
+    flex:1; font-family:inherit; font-weight:800; font-size:1rem;
+    min-height:50px; border-radius:10px; cursor:pointer;
+    border:1.5px solid #222; background:#fff; color:#222;
+  }
+  .tabs button.active { background:#222; color:#fff; }
+  .tabpane.hide { display:none; }
+  .table-wrap {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    overscroll-behavior: none;
+  }
+  /* Phone: fullscreen paper, compact rows, table scrolls inside */
+  body.is-phone { padding: 0; background: #fffdf6; }
+  body.is-phone .desk-label { display:none; }
+  body.is-phone .paper {
+    width: 100vw; width: var(--app-w);
+    min-height: var(--app-h); min-height: 100dvh;
+    max-width: none; border:none; border-radius:0; box-shadow:none; margin:0;
+  }
+  body.is-phone .paper-inner { padding: 12px 10px calc(14px + var(--sab)); }
+  body.is-phone h1 { font-size: clamp(1.15rem, 5.4vw, 1.35rem); line-height:1.6; }
+  body.is-phone .subtitle { font-size: clamp(.78rem, 3.6vw, .88rem); line-height:1.9; }
+  body.is-phone .slip { padding:10px; }
+  body.is-phone input, body.is-phone textarea, body.is-phone select { min-height:46px; font-size:16px; padding:9px 10px; }
+  body.is-phone .table-wrap { border-width:1px; }
+  body.is-phone table { min-width:560px; }
+  body.is-phone thead th { padding:8px 5px; font-size: clamp(.74rem, 3.4vw, .84rem); white-space:nowrap; }
+  body.is-phone tbody td { padding:7px 5px; font-size: clamp(.82rem, 3.8vw, .92rem); }
+  body.is-phone tbody td.date-cell { font-size: clamp(.82rem, 3.8vw, .92rem); }
+  body.is-phone tbody td.num-cell { font-size: clamp(.88rem, 4vw, .98rem); }
+  body.is-phone .note-cell { font-size: clamp(.78rem, 3.6vw, .88rem); line-height:1.8; }
+  body.is-phone .icon-btn { min-width:42px; height:42px; }
+  body.is-phone .fit-note { display:block; }
+  /* Very small phones: tighten further so nothing overflows */
+  body.is-small .paper-inner { padding: 10px 8px calc(12px + var(--sab)); }
+  body.is-small table { min-width:520px; }
+  body.is-small thead th { padding:7px 4px; }
+  body.is-small tbody td { padding:6px 4px; }
+  body.is-small .tabs button { min-height:48px; font-size:.95rem; }
+  /* Tablet: roomier paper, bigger touch targets, table fits without scroll */
+  body.is-tablet { background-attachment: fixed; }
+  body.is-tablet .paper { max-width: 780px; }
+  body.is-tablet .paper-inner { padding: 22px 24px 20px; }
+  body.is-tablet h1 { font-size: clamp(1.5rem, 3.4vw, 1.9rem); }
+  body.is-tablet .subtitle { font-size: clamp(.95rem, 2.2vw, 1.05rem); }
+  body.is-tablet input, body.is-tablet textarea, body.is-tablet select { min-height:52px; font-size:17px; padding:12px 14px; }
+  body.is-tablet .tabs button { min-height:56px; font-size:1.08rem; }
+  body.is-tablet table { min-width:0; width:100%; }
+  body.is-tablet thead th { padding:12px 10px; font-size:1rem; }
+  body.is-tablet tbody td { padding:11px 10px; font-size:1.04rem; }
+  body.is-tablet tbody td.num-cell { font-size:1.12rem; }
+  body.is-tablet .note-cell { font-size:1rem; }
+  body.is-tablet .icon-btn { min-width:48px; height:48px; font-size:19px; }
+  body.is-tablet .btn { min-height:56px; font-size:1.05rem; }
+  body.is-tablet .fit-note { display:block; }
+  /* Desktop default: keep centered 860px paper, hide fit note */
+  body.is-desktop .fit-note { display:none; }
+  /* Short landscape screens: reduce vertical chrome */
+  body.is-short .paper-inner { padding-top:10px; }
+  body.is-short h1 { margin:0; font-size:1.2rem; }
+  body.is-short .subtitle { margin:0 0 8px; }
+  .fit-note { display:none; text-align:center; font-size:.75rem; color:#777; margin-top:8px; }
+  @media (max-width:640px) {
+    .row-2{grid-template-columns:1fr;}
+    table { min-width:560px; }
+  }
+  @media (min-width:641px) and (max-width:1100px) {
+    table { min-width:0; width:100%; }
+    .row-2{grid-template-columns:1fr 1fr;}
+  }
+  @media print {
+    body { background:#fff; padding:0; }
+    .desk-label, .slip, .print-row, .pdf-row, .file-row, .pdf-modal-backdrop, .toast, .tiny, .act-col, .pagination, .tabs, .fit-note, .errbar { display:none !important; }
+    #tabList { display:block !important; }
+    #tabForm { display:none !important; }
+    .paper { box-shadow:none; border:none; max-width:none; }
+    .paper::before { display:none; }
+    /* print-all fix: overflow containers clip to first viewport when printing,
+       so expand them and let the table flow across A4 pages */
+    .table-wrap { overflow:visible !important; border:1px solid #333; }
+    table { min-width:0 !important; }
+    thead { display:table-header-group; }
+    tr { break-inside:avoid; }
+  }
+  @page { size: A4; margin: 12mm; }
+</style>
+</head>
+<body>
+<div class="desk-label">دفترچه دیالیز — ساده</div>
+
+<div class="paper">
+  <div class="paper-inner">
+    <div class="errbar" id="errbar" style="display:none"></div>
+    <h1>دفترچه دیالیز 📒</h1>
+    <p class="subtitle">وزن قبل را حتما بنویسید • وزن بعد اختیاری است • روی خانه بزنید (تکی) یا ✎ (کل ردیف)</p>
+
+    <div class="tabs" role="tablist" aria-label="بخش‌ها">
+      <button id="tabBtnList" class="active" role="tab" aria-selected="true">📒 دفترچه</button>
+      <button id="tabBtnForm" role="tab" aria-selected="false">✎ ثبت جدید</button>
+    </div>
+
+    <div class="tabpane hide" id="tabForm">
+    <div class="slip">
+      <p class="slip-title">ثبت جدید</p>
+      <form id="entryForm" novalidate>
+        <label>تاریخ (شمسی) *</label>
+        <div class="row-3">
+          <select id="daySel" aria-label="روز"></select>
+          <select id="monthSel" aria-label="ماه"></select>
+          <select id="yearSel" aria-label="سال"></select>
+        </div>
+        <div class="hint" id="dateHint">—</div>
+
+        <div class="row-2">
+          <div>
+            <label for="beforeInput">وزن قبل (کیلوگرم) *</label>
+            <input type="number" id="beforeInput" inputmode="decimal" step="0.1" min="20" max="300" placeholder="مثال: ۷۲٫۵" required />
+          </div>
+          <div>
+            <label for="afterInput">وزن بعد (کیلوگرم)</label>
+            <input type="number" id="afterInput" inputmode="decimal" step="0.1" min="20" max="300" placeholder="اختیاری" />
+            <div class="hint">اختیاری — اگر هنوز دیالیز تمام نشده خالی بگذارید.</div>
+          </div>
+        </div>
+
+        <div class="diff-box">
+          <span>اختلاف:</span>
+          <strong id="diffPreview">—</strong>
+        </div>
+
+        <label for="notesInput">توضیح / یادداشت کوتاه</label>
+        <textarea id="notesInput" rows="2" placeholder="مثال: حال خوب..."></textarea>
+
+        <div class="error" id="errorMsg"></div>
+
+        <button type="submit" class="btn btn-dark">✓ ثبت</button>
+        <button type="button" class="btn btn-paper" id="resetBtn">پاک کردن فرم</button>
+      </form>
+    </div>
+    </div><!-- /tabForm -->
+
+    <div class="tabpane" id="tabList">
+    <div class="table-wrap">
+      <table id="logTable">
+        <thead>
+          <tr>
+            <th>تاریخ</th>
+            <th>وزن قبل</th>
+            <th>وزن بعد</th>
+            <th>اختلاف</th>
+            <th style="min-width:200px">توضیح</th>
+            <th class="act-col">عمل</th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+      <div class="empty-paper" id="emptyState">📋 هنوز چیزی ثبت نشده — اولین وزن را بالا بنویسید.</div>
+    </div>
+
+    <div class="pagination" id="pagination" style="display:none">
+      <button id="prevPage" aria-label="صفحه قبل">‹</button>
+      <span class="page-info" id="pageInfo">صفحه ۱ از ۱</span>
+      <button id="nextPage" aria-label="صفحه بعد">›</button>
+    </div>
+    <div class="fit-note" id="fitNote">—</div>
+
+    <div class="file-row">
+      <button class="btn btn-paper" id="fileBtn">📁 فایل / انتقال</button>
+      <input type="file" id="importFile" accept=".dializ,.json,application/json" style="display:none" />
+      <div class="hint" style="text-align:center">PDF، استخراج و وارد کردن — همه در یک‌جا. راه آسان: فایل دریافتی را بزنید تا با دفترچه باز شود.</div>
+    </div>
+
+    <div class="paper-footer">
+      <div id="countLine">تعداد: ۰</div>
+    </div>
+
+    <div class="tiny">فقط در گوشی شما ذخیره می‌شود — بدون اینترنت</div>
+    </div><!-- /tabList -->
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="pdf-modal-backdrop" id="fileSheet" style="display:none">
+  <div class="pdf-modal" role="dialog" aria-modal="true" aria-labelledby="fileSheetTitle">
+    <h3 id="fileSheetTitle">📁 فایل / انتقال</h3>
+    <p>کدام کار را می‌خواهید انجام دهید؟</p>
+    <div class="sheet-opts">
+      <button class="btn btn-paper" id="optPdf">📄 استخراج PDF دفترچه</button>
+      <button class="btn btn-paper" id="optExport">📤 استخراج برای گوشی دیگر</button>
+      <button class="btn btn-paper" id="optImport">📥 وارد کردن فایل (دستی)</button>
+      <button class="btn btn-paper" id="sheetCancel">انصراف</button>
+    </div>
+  </div>
+</div>
+
+<div class="pdf-modal-backdrop" id="pdfModal" style="display:none">
+  <div class="pdf-modal" role="dialog" aria-modal="true" aria-labelledby="pdfModalTitle">
+    <h3 id="pdfModalTitle">📄 ذخیره PDF دفترچه</h3>
+    <p>یک فایل PDF واقعی از <b>کل دفترچه (همه رکوردها، چند صفحه)</b>، همین‌جا در گوشی ساخته می‌شود:</p>
+    <label for="pdfName">نام فایل:</label>
+    <input id="pdfName" value="دفترچه-دیالیز" maxlength="80" />
+    <ol>
+      <li>«ادامه و ذخیره PDF» را بزنید و کمی صبر کنید تا ساخته شود.</li>
+      <li>از فهرست باز شده، <b>محل ذخیره</b> را انتخاب کنید (Downloads، فایل‌ها، یا ارسال برای پزشک).</li>
+    </ol>
+    <div class="row-btns">
+      <button class="save-btn" id="pdfConfirm">ادامه و ذخیره PDF</button>
+      <button class="cancel-btn" id="pdfCancel">انصراف</button>
+    </div>
+  </div>
+</div>
+
+<div class="pdf-modal-backdrop" id="receiveModal" style="display:none">
+  <div class="pdf-modal" role="dialog" aria-modal="true" aria-labelledby="receiveTitle">
+    <h3 id="receiveTitle">📥 فایل دریافت شد</h3>
+    <p>این فایل از گوشی دیگر آمده. اضافه شود؟ تکراری‌ها خودکار رد می‌شوند.</p>
+    <div class="receive-count" id="receiveCount">—</div>
+    <div class="receive-name" id="receiveName"></div>
+    <div class="row-btns">
+      <button class="big-ok" id="receiveConfirm">✓ اضافه کن</button>
+      <button class="cancel-btn big-no" id="receiveCancel">انصراف</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Early error trap (plain ES5 on purpose): if anything fails, show it in
+// #errbar instead of dying silently with a frozen screen.
+window.__errs = [];
+window.addEventListener("error", function (ev) {
+  try {
+    var m = String((ev && ev.message) || "unknown error");
+    window.__errs.push(m);
+    var b = document.getElementById("errbar");
+    if (b) { b.textContent = "\u26A0 \u062E\u0637\u0627: " + m; b.style.display = "block"; }
+  } catch (e) {}
+});
+window.addEventListener("unhandledrejection", function (ev) {
+  try {
+    var r = ev && ev.reason;
+    var m2 = "promise: " + String((r && (r.message || r)) || "unknown");
+    window.__errs.push(m2);
+    var b2 = document.getElementById("errbar");
+    if (b2) { b2.textContent = "\u26A0 \u062E\u0637\u0627: " + m2; b2.style.display = "block"; }
+  } catch (e) {}
+});
+</script>
+<script>
+(function(){
+  "use strict";
+  const KEY = "dialysis_paper_log_v2";
+  const form = document.getElementById("entryForm");
+  const daySel = document.getElementById("daySel");
+  const monthSel = document.getElementById("monthSel");
+  const yearSel = document.getElementById("yearSel");
+  const dateHint = document.getElementById("dateHint");
+  const beforeInput = document.getElementById("beforeInput");
+  const afterInput = document.getElementById("afterInput");
+  const notesInput = document.getElementById("notesInput");
+  const diffPreview = document.getElementById("diffPreview");
+  const errorMsg = document.getElementById("errorMsg");
+  const logBody = document.getElementById("logBody");
+  const emptyState = document.getElementById("emptyState");
+  const logTable = document.getElementById("logTable");
+  const toast = document.getElementById("toast");
+  const countLine = document.getElementById("countLine");
+  const pagination = document.getElementById("pagination");
+  const prevPageBtn = document.getElementById("prevPage");
+  const nextPageBtn = document.getElementById("nextPage");
+  const pageInfo = document.getElementById("pageInfo");
+  const tabBtnList = document.getElementById("tabBtnList");
+  const tabBtnForm = document.getElementById("tabBtnForm");
+  const tabList = document.getElementById("tabList");
+  const tabForm = document.getElementById("tabForm");
+  const fitNote = document.getElementById("fitNote");
+  const DEFAULT_PAGE_SIZE = 7;
+  let currentPage = 1;
+  let editingId = null;
+  let editingField = null;
+
+  // --- Detect screen, fit app to phone / tablet / desktop ---
+  // Phones get a fullscreen compact paper (7 rows/page).
+  // Tablets get a roomier 780px paper with bigger type (10 rows/page).
+  function screenSize(){
+    const vv = window.visualViewport;
+    const w = Math.round(vv ? vv.width : window.innerWidth);
+    const h = Math.round(vv ? vv.height : window.innerHeight);
+    return { w, h };
+  }
+  function deviceKind(w){
+    let coarse=false;
+    try{ coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches; }catch(e){}
+    if (w < 640 || (coarse && w < 700)) return "phone";
+    if (w < 1100 || (coarse && w < 1300)) return "tablet";
+    return "desktop";
+  }
+  function pageSize(){
+    // Use taller screens: tablets show more rows so the list fills the display.
+    try{
+      const { w, h } = screenSize();
+      if (deviceKind(w) === "tablet" && h >= 700) return 10;
+    }catch(e){}
+    return DEFAULT_PAGE_SIZE; // 7 rows per page otherwise
+  }
+  function fitScreen(){
+    const { w, h } = screenSize();
+    const root = document.documentElement;
+    root.style.setProperty("--app-w", w + "px");
+    root.style.setProperty("--app-h", h + "px");
+    root.classList.add("fit-fluid");
+    const kind = deviceKind(w);
+    const coarse = (function(){ try{ return window.matchMedia && window.matchMedia("(pointer: coarse)").matches; }catch(e){ return false; } })();
+    // Heuristic: real touch tablets in portrait report ~768-834px CSS width.
+    // Treat wide touch devices as tablet even if width dips near the boundary.
+    const isPhone = kind === "phone";
+    const isTablet = kind === "tablet";
+    const isDesktop = kind === "desktop";
+    document.body.classList.toggle("is-phone", isPhone);
+    document.body.classList.toggle("is-tablet", isTablet);
+    document.body.classList.toggle("is-desktop", isDesktop);
+    document.body.classList.toggle("is-small", w < 360);
+    document.body.classList.toggle("is-short", h < 500);
+    try{
+      const orient = (w >= h) ? "landscape" : "portrait";
+      document.body.classList.toggle("is-landscape", orient === "landscape");
+    }catch(e){}
+    document.body.classList.add("fit-lock");
+    // Keep coarse-pointer phones fullscreen even on odd WebView sizes.
+    if (coarse && w < 700) document.body.classList.add("is-phone");
+    if (fitNote) {
+      const label = isPhone ? "گوشی" : isTablet ? "تبلت" : "دسکتاپ";
+      fitNote.textContent = "📱 " + label + " " + toFa(w) + "×" + toFa(h) + " — " + toFa(pageSize()) + " ردیف در هر صفحه";
+    }
+    // If pageSize changed across a breakpoint (7 <-> 10), clamp current page.
+    try{
+      const totalPages = Math.max(1, Math.ceil(entries.length / pageSize()));
+      if (currentPage > totalPages) currentPage = totalPages;
+    }catch(e){}
+  }
+  function showTab(which){
+    const isForm = which === "form";
+    tabForm.classList.toggle("hide", !isForm);
+    tabList.classList.toggle("hide", isForm);
+    tabBtnForm.classList.toggle("active", isForm);
+    tabBtnList.classList.toggle("active", !isForm);
+    tabBtnForm.setAttribute("aria-selected", isForm ? "true" : "false");
+    tabBtnList.setAttribute("aria-selected", !isForm ? "true" : "false");
+    window.scrollTo(0, 0);
+  }
+  tabBtnList.addEventListener("click", ()=>showTab("list"));
+  tabBtnForm.addEventListener("click", ()=>showTab("form"));
+  let fitT = null;
+  function scheduleFit(){ clearTimeout(fitT); fitT = setTimeout(()=>{ fitScreen(); render(false); }, 120); }
+  window.addEventListener("resize", scheduleFit);
+  window.addEventListener("orientationchange", scheduleFit);
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", scheduleFit);
+
+  const faDigits = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+  const toFa = s => String(s).replace(/[0-9]/g, d=>faDigits[+d]).replace(/\./g,"٫");
+  // No non-ASCII regex ranges on purpose: some older phone browsers refuse
+  // to even load a script containing them (frozen screen). Plain loop instead.
+  function toEn(s){
+    const t = String(s).split("");
+    for(let i=0;i<t.length;i++){
+      const d = faDigits.indexOf(t[i]);
+      if(d>=0) t[i]=String(d);
+      else if(t[i]==="٫"||t[i]===",") t[i]=".";
+    }
+    return t.join("");
+  }
+  function fmt(n){
+    if(n===null||n===undefined||!isFinite(n)) return "—";
+    let f = Number(n).toFixed(1).replace(/\.0+$/,"");
+    let p = f.split(".");
+    p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,"٬");
+    return toFa(p.join("٫"));
+  }
+  const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+
+  // --- Jalali conversion ---
+  function g2j(gy,gm,gd){
+    let g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
+    let jy=(gy<=1600)?0:979; gy-=(gy<=1600)?621:1600;
+    let gy2=(gm>2)?gy+1:gy;
+    let days=365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)-80+gd+g_d_m[gm-1];
+    jy+=33*Math.floor(days/12053); days%=12053;
+    jy+=4*Math.floor(days/1461); days%=1461;
+    if(days>365){ jy+=Math.floor((days-1)/365); days=(days-1)%365; }
+    let jm=(days<186)?1+Math.floor(days/31):7+Math.floor((days-186)/30);
+    let jd=(days<186)?1+(days%31):1+((days-186)%30);
+    return {jy,jm,jd};
+  }
+  function j2g(jy,jm,jd){
+    let jy0=jy-979, j_day_no=365*jy0+Math.floor(jy0/33)*8+Math.floor((jy0%33+3)/4);
+    for(let i=0;i<jm-1;i++) j_day_no += (i<6?31:30);
+    j_day_no += jd-1;
+    let g_day_no=j_day_no+79;
+    let gy=1600+400*Math.floor(g_day_no/146097);
+    g_day_no%=146097;
+    let leap=true;
+    if(g_day_no>=36525){ g_day_no--; gy+=100*Math.floor(g_day_no/36524); g_day_no%=36524; if(g_day_no>=365) g_day_no++; else leap=false; }
+    gy+=4*Math.floor(g_day_no/1461); g_day_no%=1461;
+    if(g_day_no>=366){ leap=false; g_day_no--; gy+=Math.floor(g_day_no/365); g_day_no%=365; }
+    let gd=g_day_no+1;
+    let gm_d=[0,31,(leap?29:28),31,30,31,30,31,31,30,31,30,31];
+    let gm=0; for(let i=1;i<=12;i++){ if(gd<=gm_d[i]){gm=i;break;} gd-=gm_d[i]; }
+    return {gy,gm,gd};
+  }
+  function jIsLeap(jy){
+    const breaks=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+    let bl=breaks.length, jp=breaks[0], jm, jump, leap, n, i;
+    jy-=jp; let jumpTotal=0;
+    for(i=1;i<bl;i++){ jm=breaks[i]; jump=jm-jp; if(jy<jump) break; jy-=jump; jp=jm; }
+    n=jy;
+    if(jump-(n)<6) n=n-jump+Math.floor((jump+4)/33)*33;
+    leap=(((n+1)%33)-1)%4; if(leap===-1) leap=4;
+    return leap===4||leap===0;
+  }
+  function jMonthLen(jy,jm){ if(jm<=6) return 31; if(jm<=11) return 30; return jIsLeap(jy)?30:29; }
+
+  const jMonths=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function jDateStr(jy,jm,jd){ return jy+"/"+pad2(jm)+"/"+pad2(jd); }
+  function jDisplay(jy,jm,jd){ return toFa(jd)+" "+jMonths[jm-1]+" "+toFa(jy); }
+
+  // --- selects setup ---
+  function fillSelects(){
+    yearSel.innerHTML=""; monthSel.innerHTML=""; daySel.innerHTML="";
+    const t=new Date();
+    const tj=g2j(t.getFullYear(),t.getMonth()+1,t.getDate());
+    for(let y=tj.jy-5;y<=tj.jy+5;y++){
+      let o=document.createElement("option"); o.value=y; o.textContent=toFa(y); yearSel.appendChild(o);
+    }
+    jMonths.forEach((m,i)=>{
+      let o=document.createElement("option"); o.value=i+1; o.textContent=m; monthSel.appendChild(o);
+    });
+    yearSel.value=tj.jy; monthSel.value=tj.jm;
+    rebuildDays(tj.jd);
+    updateHint();
+  }
+  function rebuildDays(keep){
+    const y=+yearSel.value, m=+monthSel.value;
+    const len=jMonthLen(y,m);
+    const cur=Math.min(keep||+daySel.value||1,len);
+    daySel.innerHTML="";
+    for(let d=1;d<=len;d++){ let o=document.createElement("option"); o.value=d; o.textContent=toFa(d); daySel.appendChild(o); }
+    daySel.value=cur;
+  }
+
+  // --- storage with migration (also reused by file import) ---
+  // All untrusted values are validated here: ids are strict alphanumerics
+  // (they end up in HTML attributes), numbers are re-parsed, notes coerced.
+  function newId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function cleanId(v){
+    const s=String(v==null?"":v).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,32);
+    return s||newId();
+  }
+  // Same reason as toEn: no \u escapes, no ranges - plain checks only,
+  // so old phone browsers load the script instead of rejecting it.
+  function sanitizeFileName(v, fallback){
+    let s = String(v == null ? "" : v).trim();
+    let out = "";
+    for(let i=0;i<s.length;i++){
+      const c = s.charCodeAt(i);
+      out += (c < 32 ? "-" : s.charAt(i));
+    }
+    out = out.replace(/[\\/:*?"<>|]/g, "-").replace(/\.\.+/g, "-");
+    out = out.replace(/^-+/, "").slice(0, 80);
+    return out || fallback;
+  }
+  function normalizeEntry(e){
+    if(!e || typeof e!=="object") return null;
+    if(e.jy&&e.jm&&e.jd) { e.sortKey=e.jy*10000+e.jm*100+e.jd; }
+    else if(e.date){ // old Gregorian ISO -> convert
+      let p=String(e.date).split("-");
+      if(p.length===3){ let j=g2j(+p[0],+p[1],+p[2]); e={...e, jy:j.jy, jm:j.jm, jd:j.jd, jdate:jDateStr(j.jy,j.jm,j.jd), sortKey:j.jy*10000+j.jm*100+j.jd}; }
+      else return null;
+    }
+    else return null;
+    const b=Number(e.before);
+    if(!isFinite(b)) return null;
+    e.before=Math.round(b*10)/10;
+    if(e.after===null||e.after===undefined||e.after===""){ e.after=null; e.diff=null; }
+    else{
+      const a=Number(e.after);
+      if(!isFinite(a)) return null;
+      e.after=Math.round(a*10)/10;
+      e.diff=Math.round((e.before-e.after)*10)/10;
+    }
+    if(typeof e.notes!=="string") e.notes=e.notes==null?"":String(e.notes);
+    e.id=cleanId(e.id);
+    return e;
+  }
+  function load(){
+    try{
+      let r=localStorage.getItem(KEY); if(!r) return [];
+      let a=JSON.parse(r); if(!Array.isArray(a)) return [];
+      return a.map(normalizeEntry).filter(Boolean);
+    }catch(e){ return []; }
+  }
+  function save(l){ localStorage.setItem(KEY, JSON.stringify(l)); }
+  let entries=load();
+  entries.sort((a,b)=>(b.sortKey||0)-(a.sortKey||0));
+
+  function toastMsg(m){ toast.textContent=m; toast.classList.add("show"); clearTimeout(toastMsg._t); toastMsg._t=setTimeout(()=>toast.classList.remove("show"),2200); }
+  function showErr(m){
+    try{
+      const b=document.getElementById("errbar");
+      if(b){ b.textContent="⚠ خطا: "+m; b.style.display="block"; }
+    }catch(e){}
+    try{ toastMsg("خطا رخ داد"); }catch(e){}
+  }
+  function err(m){ errorMsg.textContent=m; errorMsg.classList.add("show"); }
+  function clearErr(){ errorMsg.classList.remove("show"); errorMsg.textContent=""; }
+
+  function updateHint(){
+    if(!yearSel.value||!monthSel.value||!daySel.value){ dateHint.textContent="—"; return; }
+    dateHint.textContent="انتخاب شما: "+jDisplay(+yearSel.value,+monthSel.value,+daySel.value);
+  }
+  function updatePreview(){
+    let b=parseFloat(toEn(beforeInput.value.trim()));
+    let aRaw=toEn(afterInput.value.trim());
+    let a=aRaw===""?NaN:parseFloat(aRaw);
+    if(isFinite(b)&&isFinite(a)){ diffPreview.textContent=fmt(Math.round((b-a)*10)/10)+" کیلوگرم"; }
+    else if(isFinite(b)&&!isFinite(a)){ diffPreview.textContent="ثبت فقط وزن قبل ✓"; }
+    else diffPreview.textContent="—";
+  }
+
+  function render(force){
+    // Don't wipe an open edit box on background refreshes
+    // (e.g. keyboard opening fires visualViewport resize -> scheduleFit).
+    // Callers that really want a refresh must pass true.
+    if (editingId && force !== true) return;
+    editingId = null; editingField = null;
+    logBody.innerHTML="";
+    const ps = pageSize();
+    const totalPages = Math.max(1, Math.ceil(entries.length / ps));
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    if(entries.length===0){
+      logTable.style.display="none"; emptyState.style.display="block";
+      pagination.style.display="none";
+    }
+    else{
+      logTable.style.display=""; emptyState.style.display="none";
+      const start = (currentPage - 1) * ps;
+      const pageItems = entries.slice(start, start + ps);
+      let frag=document.createDocumentFragment();
+      pageItems.forEach(e=>{
+        let tr=document.createElement("tr");
+        tr.dataset.id=e.id;
+        let diffTxt = (e.after===null||e.after===undefined||e.after==="") ? "—" : fmt(e.diff);
+        let cls = (e.diff===null||e.diff===undefined) ? "" : e.diff>0 ? "pos" : e.diff<0 ? "neg" : "";
+        let afterTxt = (e.after===null||e.after===undefined||e.after==="") ? "—" : toFa(esc(String(e.after)));
+        tr.innerHTML =
+          "<td class='date-cell tap-edit' tabindex='0' title='برای ویرایش بزنید'>"+esc(jDisplay(e.jy,e.jm,e.jd))+"</td>"+
+          "<td class='before-td num-cell tap-edit' tabindex='0' title='برای ویرایش بزنید'>"+toFa(esc(String(e.before)))+"</td>"+
+          "<td class='after-td num-cell tap-edit' tabindex='0' title='برای ویرایش بزنید'>"+afterTxt+"</td>"+
+          "<td class='diff-td'>"+(diffTxt==="—"?"—":"<span class='pill "+cls+"'>"+diffTxt+"</span>")+"</td>"+
+          "<td class='note-td tap-edit' tabindex='0' title='برای ویرایش بزنید'><span class='note-cell'>"+esc(e.notes||"—")+"</span></td>"+
+          "<td class='act-col'><div class='actions'><button class='icon-btn edit-btn' title='ویرایش کل ردیف'>✎</button><button class='icon-btn del-btn' title='حذف'>🗑</button></div></td>";
+        frag.appendChild(tr);
+      });
+      logBody.appendChild(frag);
+      if (entries.length > ps) {
+        pagination.style.display="flex";
+        pageInfo.textContent = "صفحه " + toFa(currentPage) + " از " + toFa(totalPages);
+        prevPageBtn.disabled = currentPage <= 1;
+        nextPageBtn.disabled = currentPage >= totalPages;
+      } else {
+        pagination.style.display="none";
+      }
+    }
+    countLine.textContent="تعداد: "+toFa(entries.length);
+  }
+
+  prevPageBtn.addEventListener("click",()=>{ if(currentPage>1){ currentPage--; render(true); } });
+  nextPageBtn.addEventListener("click",()=>{
+    const totalPages = Math.max(1, Math.ceil(entries.length / pageSize()));
+    if(currentPage<totalPages){ currentPage++; render(true); }
+  });
+
+  // print all rows (not just current page)
+  let savedPage = 1;
+  let savedTitle = "";
+  window.addEventListener("beforeprint",()=>{
+    savedPage = currentPage;
+    editingId = null; editingField = null;
+    if (entries.length > pageSize()) {
+      logBody.innerHTML="";
+      let frag=document.createDocumentFragment();
+      entries.forEach(e=>{
+        let tr=document.createElement("tr");
+        let diffTxt = (e.after===null||e.after===undefined||e.after==="") ? "—" : fmt(e.diff);
+        let cls = (e.diff===null||e.diff===undefined) ? "" : e.diff>0 ? "pos" : e.diff<0 ? "neg" : "";
+        let afterTxt = (e.after===null||e.after===undefined||e.after==="") ? "—" : toFa(esc(String(e.after)));
+        tr.innerHTML =
+          "<td class='date-cell'>"+esc(jDisplay(e.jy,e.jm,e.jd))+"</td>"+
+          "<td class='num-cell'>"+toFa(esc(String(e.before)))+"</td>"+
+          "<td class='num-cell'>"+afterTxt+"</td>"+
+          "<td>"+(diffTxt==="—"?"—":"<span class='pill "+cls+"'>"+diffTxt+"</span>")+"</td>"+
+          "<td><span class='note-cell'>"+esc(e.notes||"—")+"</span></td>";
+        frag.appendChild(tr);
+      });
+      logBody.appendChild(frag);
+    }
+  });
+  window.addEventListener("afterprint",()=>{ if(savedTitle){ document.title=savedTitle; savedTitle=""; } currentPage = savedPage; render(true); });
+
+  [beforeInput,afterInput].forEach(el=>el.addEventListener("input",()=>{clearErr();updatePreview();}));
+  yearSel.addEventListener("change",()=>{rebuildDays();updateHint();});
+  monthSel.addEventListener("change",()=>{rebuildDays();updateHint();});
+  daySel.addEventListener("change",updateHint);
+  document.getElementById("resetBtn").addEventListener("click",()=>{form.reset();fillSelects();clearErr();updatePreview();beforeInput.focus();});
+
+  function buildEditDayOptions(y, m){
+    const len=jMonthLen(y,m);
+    let s="";
+    for(let d=1;d<=len;d++) s+="<option value='"+d+"'>"+toFa(d)+"</option>";
+    return s;
+  }
+  function startEdit(id, field){
+    if(field!=="date" && field!=="before" && field!=="after" && field!=="note") return;
+    let tr=logBody.querySelector('tr[data-id="'+id+'"]');
+    if(!tr) return;
+    const e=entries.find(x=>String(x.id)===String(id)); if(!e) return;
+    if (editingId === id && editingField === field) return; // already editing this cell
+    if (editingId) {
+      // close the other open cell first, then re-find this row (DOM was rebuilt)
+      editingId = null; editingField = null; render(true);
+      tr = logBody.querySelector('tr[data-id="'+id+'"]');
+      if(!tr) return;
+    }
+    editingId = id; editingField = field;
+    tr.classList.add("editing-row");
+    const isTouch = (function(){ try{ return window.matchMedia && window.matchMedia("(pointer: coarse)").matches; }catch(err){ return false; } })();
+    const doCancel=()=>{ editingId=null; editingField=null; render(true); };
+    const doSaveCell=()=>{ editingId=null; editingField=null; save(entries); render(true); toastMsg("ذخیره شد ✓"); };
+    if(field==="date"){
+      const td=tr.querySelector(".date-cell");
+      let curJy=e.jy;
+      try{
+        const t=new Date(); const tj=g2j(t.getFullYear(),t.getMonth()+1,t.getDate());
+        curJy=tj.jy;
+      }catch(err){}
+      const lo=Math.min(e.jy,curJy-5), hi=Math.max(e.jy,curJy+5);
+      let yOpts="";
+      for(let y=lo;y<=hi;y++) yOpts+="<option value='"+y+"'"+(y===e.jy?" selected":"")+">"+toFa(y)+"</option>";
+      let mOpts="";
+      for(let m=1;m<=12;m++) mOpts+="<option value='"+m+"'"+(m===e.jm?" selected":"")+">"+jMonths[m-1]+"</option>";
+      td.classList.add("editing");
+      td.innerHTML="<div class='edit-box'><div class='edit-date-grid'>"+
+        "<select id='edit-year-"+id+"'>"+yOpts+"</select>"+
+        "<select id='edit-month-"+id+"'>"+mOpts+"</select>"+
+        "<select id='edit-day-"+id+"'></select>"+
+        "</div><div class='row-btns mini-btns'><button class='save-btn'>ذخیره</button><button class='cancel-btn'>انصراف</button></div></div>";
+      const ySel=td.querySelector("#edit-year-"+id);
+      const mSel=td.querySelector("#edit-month-"+id);
+      const dSel=td.querySelector("#edit-day-"+id);
+      dSel.innerHTML=buildEditDayOptions(e.jy,e.jm);
+      dSel.value=Math.min(e.jd,jMonthLen(e.jy,e.jm));
+      const reDays=()=>{ const yy=+ySel.value, mm=+mSel.value; const keep=+dSel.value||1; dSel.innerHTML=buildEditDayOptions(yy,mm); dSel.value=Math.min(keep,jMonthLen(yy,mm)); };
+      ySel.addEventListener("change",reDays);
+      mSel.addEventListener("change",reDays);
+      td.querySelector(".cancel-btn").addEventListener("click",doCancel);
+      td.querySelector(".save-btn").addEventListener("click",()=>{
+        const yy=+ySel.value, mm=+mSel.value, dd=+dSel.value;
+        if(!yy||!mm||!dd){ alert("لطفاً تاریخ معتبر انتخاب کنید."); return; }
+        if(dd>jMonthLen(yy,mm)){ alert("روز برای این ماه معتبر نیست."); return; }
+        e.jy=yy; e.jm=mm; e.jd=dd;
+        e.jdate=jDateStr(yy,mm,dd);
+        e.sortKey=yy*10000+mm*100+dd;
+        entries.sort((x,y)=>(y.sortKey||0)-(x.sortKey||0));
+        const idx=entries.findIndex(x=>String(x.id)===String(id));
+        if(idx>=0) currentPage=Math.floor(idx/pageSize())+1;
+        doSaveCell();
+      });
+    }else if(field==="before"){
+      const td=tr.querySelector(".before-td");
+      const cur=(e.before===null||e.before===undefined)?"":e.before;
+      td.classList.add("editing");
+      td.innerHTML="<div class='edit-box'><input id='edit-before-"+id+"' type='number' inputmode='decimal' step='0.1' min='20' max='300' placeholder='وزن قبل' value='"+esc(String(cur))+"' />"+
+        "<div class='row-btns mini-btns'><button class='save-btn'>ذخیره</button><button class='cancel-btn'>انصراف</button></div></div>";
+      const inp=td.querySelector("input");
+      if(!isTouch) inp.focus();
+      td.querySelector(".cancel-btn").addEventListener("click",doCancel);
+      td.querySelector(".save-btn").addEventListener("click",()=>{
+        const raw=toEn(inp.value.trim());
+        const bv=parseFloat(raw);
+        if(!isFinite(bv)){ alert("وزن قبل را وارد کنید."); return; }
+        if(bv<20||bv>300){ alert("وزن قبل باید بین ۲۰ تا ۳۰۰ باشد."); return; }
+        e.before=Math.round(bv*10)/10;
+        e.diff=(e.after===null||e.after===undefined?null:Math.round((e.before-e.after)*10)/10);
+        doSaveCell();
+      });
+    }else if(field==="after"){
+      const td=tr.querySelector(".after-td");
+      const cur=(e.after===null||e.after===undefined)?"":e.after;
+      td.classList.add("editing");
+      td.innerHTML="<div class='edit-box'><input id='edit-after-"+id+"' type='number' inputmode='decimal' step='0.1' min='20' max='300' placeholder='وزن بعد' value='"+esc(String(cur))+"' />"+
+        "<div class='row-btns mini-btns'><button class='save-btn'>ذخیره</button><button class='cancel-btn'>انصراف</button></div></div>";
+      const inp=td.querySelector("input");
+      if(!isTouch) inp.focus();
+      td.querySelector(".cancel-btn").addEventListener("click",doCancel);
+      td.querySelector(".save-btn").addEventListener("click",()=>{
+        const raw=toEn(inp.value.trim());
+        const av = raw===""?null:parseFloat(raw);
+        if(av!==null&&(isNaN(av)||av<20||av>300)){ alert("وزن بعد باید بین ۲۰ تا ۳۰۰ باشد یا خالی."); return; }
+        e.after=(av===null?null:Math.round(av*10)/10);
+        e.diff=(e.after===null?null:Math.round((e.before-e.after)*10)/10);
+        doSaveCell();
+      });
+    }else if(field==="note"){
+      const td=tr.querySelector(".note-td");
+      const cur=e.notes||"";
+      td.classList.add("editing");
+      td.innerHTML="<div class='edit-box'>"+
+        "<textarea id='edit-note-"+id+"' placeholder='توضیح...'>"+esc(cur)+"</textarea>"+
+        "<div class='row-btns mini-btns'><button class='save-btn'>ذخیره</button><button class='cancel-btn'>انصراف</button></div></div>";
+      const ta=td.querySelector("textarea");
+      if(!isTouch) ta.focus();
+      td.querySelector(".cancel-btn").addEventListener("click",doCancel);
+      td.querySelector(".save-btn").addEventListener("click",()=>{
+        e.notes=ta.value.trim();
+        doSaveCell();
+      });
+    }
+  }
+  function startEditAll(id){
+    // Full-row edit: every cell editable at once, one Save/Cancel.
+    let tr=logBody.querySelector('tr[data-id="'+id+'"]');
+    if(!tr) return;
+    const e=entries.find(x=>String(x.id)===String(id)); if(!e) return;
+    if (editingId === id && editingField === "all") return; // already editing whole row
+    if (editingId) {
+      editingId = null; editingField = null; render(true);
+      tr = logBody.querySelector('tr[data-id="'+id+'"]');
+      if(!tr) return;
+    }
+    editingId = id; editingField = "all";
+    tr.classList.add("editing-row");
+    const dateTd=tr.querySelector(".date-cell");
+    const beforeTd=tr.querySelector(".before-td");
+    const afterTd=tr.querySelector(".after-td");
+    const diffTd=tr.querySelector(".diff-td");
+    const noteTd=tr.querySelector(".note-td");
+    const actTd=tr.querySelector(".act-col");
+    const curNote=e.notes||"";
+    const curAfter=(e.after===null||e.after===undefined)?"":e.after;
+    const curBefore=(e.before===null||e.before===undefined)?"":e.before;
+    let curJy=e.jy;
+    try{
+      const t=new Date(); const tj=g2j(t.getFullYear(),t.getMonth()+1,t.getDate());
+      curJy=tj.jy;
+    }catch(err){}
+    const lo=Math.min(e.jy,curJy-5), hi=Math.max(e.jy,curJy+5);
+    let yOpts="";
+    for(let y=lo;y<=hi;y++) yOpts+="<option value='"+y+"'"+(y===e.jy?" selected":"")+">"+toFa(y)+"</option>";
+    let mOpts="";
+    for(let m=1;m<=12;m++) mOpts+="<option value='"+m+"'"+(m===e.jm?" selected":"")+">"+jMonths[m-1]+"</option>";
+    dateTd.classList.add("editing");
+    dateTd.innerHTML="<div class='edit-box'><div class='edit-date-grid'>"+
+      "<select id='edit-all-year-"+id+"'>"+yOpts+"</select>"+
+      "<select id='edit-all-month-"+id+"'>"+mOpts+"</select>"+
+      "<select id='edit-all-day-"+id+"'></select>"+
+      "</div></div>";
+    const ySel=dateTd.querySelector("#edit-all-year-"+id);
+    const mSel=dateTd.querySelector("#edit-all-month-"+id);
+    const dSel=dateTd.querySelector("#edit-all-day-"+id);
+    dSel.innerHTML=buildEditDayOptions(e.jy,e.jm);
+    dSel.value=Math.min(e.jd,jMonthLen(e.jy,e.jm));
+    const reDays=()=>{ const yy=+ySel.value, mm=+mSel.value; const keep=+dSel.value||1; dSel.innerHTML=buildEditDayOptions(yy,mm); dSel.value=Math.min(keep,jMonthLen(yy,mm)); };
+    ySel.addEventListener("change",reDays);
+    mSel.addEventListener("change",reDays);
+    beforeTd.classList.add("editing");
+    beforeTd.innerHTML="<div class='edit-box'><input id='edit-all-before-"+id+"' type='number' inputmode='decimal' step='0.1' min='20' max='300' placeholder='وزن قبل' value='"+esc(String(curBefore))+"' /></div>";
+    afterTd.classList.add("editing");
+    afterTd.innerHTML="<div class='edit-box'><input id='edit-all-after-"+id+"' type='number' inputmode='decimal' step='0.1' min='20' max='300' placeholder='وزن بعد' value='"+esc(String(curAfter))+"' /></div>";
+    if(diffTd) diffTd.innerHTML="<span class='hint'>خودکار</span>";
+    noteTd.classList.add("editing");
+    noteTd.innerHTML="<div class='edit-box'>"+
+      "<textarea id='edit-all-note-"+id+"' placeholder='توضیح...'>"+esc(curNote)+"</textarea>"+
+      "<div class='row-btns mini-btns'><button class='save-btn'>ذخیره</button><button class='cancel-btn'>انصراف</button></div></div>";
+    if(actTd) actTd.innerHTML="<div class='actions'><button class='icon-btn cancel-btn2' title='انصراف'>✕</button></div>";
+    const beforeEl=beforeTd.querySelector("input");
+    const afterEl=afterTd.querySelector("input");
+    const ta=noteTd.querySelector("textarea");
+    const doCancel=()=>{ editingId=null; editingField=null; render(true); };
+    noteTd.querySelector(".cancel-btn").addEventListener("click",doCancel);
+    if(actTd){ const c2=actTd.querySelector(".cancel-btn2"); if(c2) c2.addEventListener("click",doCancel); }
+    noteTd.querySelector(".save-btn").addEventListener("click",()=>{
+      const nn=ta.value.trim();
+      const bvRaw=toEn(beforeEl.value.trim());
+      const avRaw=toEn(afterEl.value.trim());
+      const yy=+ySel.value, mm=+mSel.value, dd=+dSel.value;
+      if(!yy||!mm||!dd){ alert("لطفاً تاریخ معتبر انتخاب کنید."); return; }
+      if(dd>jMonthLen(yy,mm)){ alert("روز برای این ماه معتبر نیست."); return; }
+      const bv=parseFloat(bvRaw);
+      if(!isFinite(bv)){ alert("وزن قبل را وارد کنید."); return; }
+      if(bv<20||bv>300){ alert("وزن قبل باید بین ۲۰ تا ۳۰۰ باشد."); return; }
+      const av = avRaw===""?null:parseFloat(avRaw);
+      if(av!==null&&(isNaN(av)||av<20||av>300)){ alert("وزن بعد باید بین ۲۰ تا ۳۰۰ باشد یا خالی."); return; }
+      e.jy=yy; e.jm=mm; e.jd=dd;
+      e.jdate=jDateStr(yy,mm,dd);
+      e.sortKey=yy*10000+mm*100+dd;
+      e.before=Math.round(bv*10)/10;
+      e.after=(av===null?null:Math.round(av*10)/10);
+      e.diff=(e.after===null?null:Math.round((e.before-e.after)*10)/10);
+      e.notes=nn;
+      entries.sort((x,y)=>(y.sortKey||0)-(x.sortKey||0));
+      const idx=entries.findIndex(x=>String(x.id)===String(id));
+      if(idx>=0) currentPage=Math.floor(idx/pageSize())+1;
+      editingId=null; editingField=null; save(entries); render(true); toastMsg("ذخیره شد ✓");
+    });
+  }
+  function fieldForCell(td){
+    if(!td) return null;
+    if(td.classList.contains("date-cell")) return "date";
+    if(td.classList.contains("before-td")) return "before";
+    if(td.classList.contains("after-td")) return "after";
+    if(td.classList.contains("note-td")) return "note";
+    return null;
+  }
+  logBody.addEventListener("click",(ev)=>{
+    let tr=ev.target.closest("tr"); if(!tr) return;
+    if(tr.classList.contains("editing-row")) return; // clicks inside edit box handled by its own buttons
+    const id=tr.dataset.id;
+    const e=entries.find(x=>String(x.id)===String(id)); if(!e) return;
+
+    if(ev.target.closest(".del-btn")){
+      if(!confirm("حذف شود؟")) return;
+      if (editingId === id){ editingId = null; editingField = null; }
+      entries=entries.filter(x=>String(x.id)!==String(id));
+      const totalPages = Math.max(1, Math.ceil(entries.length / pageSize()));
+      if (currentPage > totalPages) currentPage = totalPages;
+      save(entries); render(true); toastMsg("حذف شد"); return;
+    }
+    if(ev.target.closest(".diff-td")){
+      toastMsg("اختلاف خودکار حساب می‌شود");
+      return;
+    }
+    // tap a cell = edit only that cell; ✎ button = edit the whole row
+    const td=ev.target.closest(".tap-edit");
+    if(td){
+      const f=fieldForCell(td);
+      if(f){ startEdit(id,f); return; }
+    }
+    if(ev.target.closest(".edit-btn")){
+      startEditAll(id);
+    }
+  });
+  // keyboard: Enter/Space on a focused cell opens that same cell; Escape cancels
+  logBody.addEventListener("keydown",(ev)=>{
+    if(ev.key==="Escape" && editingId){ editingId=null; editingField=null; render(true); return; }
+    if(ev.key!=="Enter" && ev.key!==" ") return;
+    const td=ev.target.closest?ev.target.closest(".tap-edit"):null;
+    if(!td) return;
+    const tr=td.closest("tr"); if(!tr||!tr.dataset.id) return;
+    ev.preventDefault();
+    const f=fieldForCell(td);
+    if(f) startEdit(tr.dataset.id, f);
+  });
+
+  form.addEventListener("submit",(ev)=>{
+    ev.preventDefault(); clearErr();
+    const jy=+yearSel.value, jm=+monthSel.value, jd=+daySel.value;
+    const b=parseFloat(toEn(beforeInput.value.trim()));
+    const aRaw=toEn(afterInput.value.trim());
+    const a=aRaw===""?null:parseFloat(aRaw);
+    const notes=notesInput.value.trim();
+    if(!jy||!jm||!jd){ err("لطفاً تاریخ شمسی را انتخاب کنید."); return; }
+    if(!isFinite(b)){ err("لطفاً وزن قبل را وارد کنید."); beforeInput.focus(); return; }
+    if(b<20||b>300){ err("وزن قبل باید بین ۲۰ تا ۳۰۰ باشد."); return; }
+    if(a!==null&&(isNaN(a)||a<20||a>300)){ err("وزن بعد باید بین ۲۰ تا ۳۰۰ باشد یا خالی."); return; }
+    const diff=(a===null?null:Math.round((b-a)*10)/10);
+    entries.unshift({
+      id:newId(),
+      jy,jm,jd,jdate:jDateStr(jy,jm,jd),sortKey:jy*10000+jm*100+jd,
+      before:Math.round(b*10)/10, after:(a===null?null:Math.round(a*10)/10), diff,
+      notes, createdAt:new Date().toISOString()
+    });
+    entries.sort((x,y)=>(y.sortKey||0)-(x.sortKey||0));
+    currentPage = 1;
+    save(entries); render(true);
+    notesInput.value=""; beforeInput.value=""; afterInput.value="";
+    updatePreview(); toastMsg("ثبت شد ✓");
+    showTab("list");
+  });
+  // --- Native bridge (inside the installed app) ---
+  // window.print() and blob-downloads do nothing in an Android WebView,
+  // so on-device saving goes through Capacitor Filesystem + Share.
+  function nativePlugins(){
+    try{
+      const C=window.Capacitor;
+      if(C&&C.isNativePlatform&&C.isNativePlatform()) return (C.Plugins||{});
+    }catch(e){}
+    return null;
+  }
+  function isNative(){ return !!nativePlugins(); }
+
+  // --- PDF builder: table is drawn on canvas (browser shapes Persian
+  // correctly), then embedded as JPEG pages in a minimal PDF file ---
+  function wrapText(ctx, text, maxW){
+    const words=String(text||"").split(/\s+/).filter(Boolean);
+    const lines=[]; let cur="";
+    for(let i=0;i<words.length;i++){
+      const t=cur?cur+" "+words[i]:words[i];
+      if(ctx.measureText(t).width<=maxW||!cur) cur=t;
+      else{ lines.push(cur); cur=words[i]; }
+    }
+    if(cur) lines.push(cur);
+    return lines.length?lines:["—"];
+  }
+  function drawLogbookPage(pageEntries, pageNo, pageCount, totalCount){
+    const W=1240,H=1754,M=70;
+    const cv=document.createElement("canvas"); cv.width=W; cv.height=H;
+    const ctx=cv.getContext("2d");
+    const FONT='"Vazirmatn","IRANSansX",Tahoma,"Segoe UI",sans-serif';
+    ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,W,H);
+    ctx.direction="rtl";
+    const cw=W-2*M;
+    ctx.textAlign="center"; ctx.fillStyle="#1a1a22";
+    ctx.font="900 52px "+FONT;
+    ctx.fillText("دفترچه دیالیز", W/2, M+62);
+    const t=new Date(); const tj=g2j(t.getFullYear(),t.getMonth()+1,t.getDate());
+    ctx.font="500 30px "+FONT; ctx.fillStyle="#555";
+    ctx.fillText("تا تاریخ "+jDisplay(tj.jy,tj.jm,tj.jd), W/2, M+112);
+    const widths=[210,140,140,150];
+    widths.push(cw-(210+140+140+150));
+    const heads=["تاریخ","وزن قبل","وزن بعد","اختلاف","توضیح"];
+    function cellRight(i){ let x=W-M; for(let k=0;k<i;k++) x-=widths[k]; return x; }
+    let y=M+152;
+    const headH=72, rowH=66;
+    ctx.font="800 30px "+FONT;
+    for(let i=0;i<5;i++){
+      const rx=cellRight(i)-widths[i];
+      ctx.fillStyle="#e4e4e4"; ctx.fillRect(rx,y,widths[i],headH);
+      ctx.lineWidth=2.5; ctx.strokeStyle="#333"; ctx.strokeRect(rx,y,widths[i],headH);
+      ctx.fillStyle="#1a1a22"; ctx.textAlign="center";
+      ctx.fillText(heads[i], rx+widths[i]/2, y+47);
+    }
+    y+=headH;
+    pageEntries.forEach(e=>{
+      const emptyAfter=(e.after===null||e.after===undefined||e.after==="");
+      const vals=[jDisplay(e.jy,e.jm,e.jd), fmt(e.before), emptyAfter?"—":fmt(e.after), emptyAfter?"—":fmt(e.diff), (e.notes||"—")];
+      for(let i=0;i<5;i++){
+        const rx=cellRight(i)-widths[i];
+        if(i===3&&!emptyAfter){
+          ctx.fillStyle=e.diff>0?"#e6f4ea":e.diff<0?"#fde8e8":"#ffffff";
+          ctx.fillRect(rx,y,widths[i],rowH);
+        }
+        ctx.lineWidth=1.5; ctx.strokeStyle="#555"; ctx.strokeRect(rx,y,widths[i],rowH);
+      }
+      ctx.fillStyle="#1a1a22"; ctx.textAlign="center";
+      ctx.font="700 29px "+FONT;
+      for(let i=0;i<4;i++){
+        const rx=cellRight(i)-widths[i];
+        ctx.fillText(vals[i], rx+widths[i]/2, y+44);
+      }
+      const nrx=cellRight(4)-widths[4];
+      ctx.font="500 27px "+FONT; ctx.textAlign="right";
+      const lines=wrapText(ctx, vals[4], widths[4]-26).slice(0,2);
+      for(let li=0;li<lines.length;li++) ctx.fillText(lines[li], nrx+widths[4]-13, y+35+li*30);
+      y+=rowH;
+    });
+    ctx.font="700 28px "+FONT; ctx.textAlign="center"; ctx.fillStyle="#333";
+    ctx.fillText("تعداد کل: "+toFa(totalCount)+"   •   صفحه "+toFa(pageNo)+" از "+toFa(pageCount), W/2, H-M-18);
+    return cv;
+  }
+  function b64ToBytes(b64){
+    const bin=atob(String(b64).split(",").pop());
+    const u=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+    return u;
+  }
+  function bytesToB64(bytes){
+    let s=""; const CH=0x8000;
+    for(let i=0;i<bytes.length;i+=CH) s+=String.fromCharCode.apply(null, bytes.subarray(i,i+CH));
+    return btoa(s);
+  }
+  function buildPdf(pages){ // pages: [{w,h,jpegB64}] -> Uint8Array
+    const enc=new TextEncoder();
+    const PW=595.28, PH=841.89;
+    const objs={};
+    objs[1]="<< /Type /Catalog /Pages 2 0 R >>";
+    const kids=pages.map((_,i)=>(3+i*3)+" 0 R").join(" ");
+    objs[2]="<< /Type /Pages /Kids ["+kids+"] /Count "+pages.length+" >>";
+    const streams={};
+    pages.forEach((p,i)=>{
+      const pn=3+i*3, cn=4+i*3, im=5+i*3;
+      objs[pn]="<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+PW+" "+PH+"] /Contents "+cn+" 0 R /Resources << /XObject << /Im"+i+" "+im+" 0 R >> /ProcSet [/PDF /ImageC] >> >>";
+      streams[cn]={dict:"<< /Length 0 >>", raw:enc.encode("q "+PW+" 0 0 "+PH+" 0 0 cm /Im"+i+" Do Q")};
+      const img=b64ToBytes(p.jpegB64);
+      streams[im]={dict:"<< /Type /XObject /Subtype /Image /Width "+p.w+" /Height "+p.h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+img.length+" >>", raw:img};
+    });
+    const maxNo=2+pages.length*3;
+    const parts=[]; const offsets={};
+    function totalLen(){ let s=0; for(let i=0;i<parts.length;i++) s+=parts[i].length; return s; }
+    parts.push(enc.encode("%PDF-1.4\n"));
+    for(let no=1;no<=maxNo;no++){
+      offsets[no]=totalLen();
+      if(objs[no]!==undefined){
+        parts.push(enc.encode(no+" 0 obj\n"+objs[no]+"\nendobj\n"));
+      }else{
+        const st=streams[no];
+        const head=no+" 0 obj\n"+st.dict.replace(/\/Length \d+/, "/Length "+st.raw.length)+"\nstream\n";
+        parts.push(enc.encode(head));
+        parts.push(st.raw);
+        parts.push(enc.encode("\nendstream\nendobj\n"));
+      }
+    }
+    const xrefPos=totalLen();
+    let xref="xref\n0 "+(maxNo+1)+"\n0000000000 65535 f \n";
+    for(let no=1;no<=maxNo;no++){
+      let s=String(offsets[no]); while(s.length<10) s="0"+s;
+      xref+=s+" 00000 n \n";
+    }
+    parts.push(enc.encode(xref+"trailer\n<< /Size "+(maxNo+1)+" /Root 1 0 R >>\nstartxref\n"+xrefPos+"\n%%EOF"));
+    const out=new Uint8Array(totalLen()); let o=0;
+    for(let i=0;i<parts.length;i++){ out.set(parts[i],o); o+=parts[i].length; }
+    return out;
+  }
+  function downloadBlobFallback(blob, filename){
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }
+  async function saveFileNative(base64Data, filename, shareText){
+    const P=nativePlugins();
+    if(!P||!P.Filesystem||!P.Share) return false;
+    const r=await P.Filesystem.writeFile({path:filename, data:base64Data, directory:"CACHE"});
+    await P.Share.share({title:filename, text:shareText, files:[r.uri], dialogTitle:"ذخیره / ارسال"});
+    return true;
+  }
+  const pdfModal = document.getElementById("pdfModal");
+  const fileSheet = document.getElementById("fileSheet");
+  function openSheet(){
+    if(editingId){ editingId=null; editingField=null; render(true); }
+    fileSheet.style.display="flex";
+  }
+  function closeSheet(){ fileSheet.style.display="none"; }
+  document.getElementById("fileBtn").addEventListener("click", openSheet);
+  document.getElementById("sheetCancel").addEventListener("click", closeSheet);
+  fileSheet.addEventListener("click",(ev)=>{ if(ev.target===fileSheet) closeSheet(); });
+  document.getElementById("optPdf").addEventListener("click",()=>{
+    if(entries.length===0){ toastMsg("هنوز رکوردی برای PDF نیست"); return; }
+    closeSheet();
+    pdfModal.style.display="flex";
+  });
+  document.getElementById("pdfCancel").addEventListener("click",()=>{ pdfModal.style.display="none"; });
+  pdfModal.addEventListener("click",(ev)=>{ if(ev.target===pdfModal) pdfModal.style.display="none"; });
+  document.getElementById("pdfConfirm").addEventListener("click", async ()=>{
+    if(entries.length===0){ toastMsg("هنوز رکوردی برای PDF نیست"); return; }
+    let name=sanitizeFileName(document.getElementById("pdfName").value, "دفترچه-دیالیز");
+    if(!/\.pdf$/i.test(name)) name+=".pdf";
+    pdfModal.style.display="none";
+    if(editingId){ editingId=null; editingField=null; render(true); }
+    try{
+      await new Promise(r=>setTimeout(r,80));
+      try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
+      // ALWAYS export the full logbook, newest-first, independent of screen pagination.
+      const sorted=[...entries].sort((a,b)=>(b.sortKey||0)-(a.sortKey||0));
+      const ROWS=20, totalPdf=Math.max(1,Math.ceil(sorted.length/ROWS));
+      const pages=[];
+      for(let p=0;p<totalPdf;p++){
+        if(totalPdf>1) toastMsg("در حال ساخت PDF... صفحه "+toFa(p+1)+" از "+toFa(totalPdf));
+        else toastMsg("در حال ساخت PDF... کمی صبر کنید");
+        await new Promise(r=>setTimeout(r,0)); // let UI breathe on phones
+        const slice=sorted.slice(p*ROWS,(p+1)*ROWS);
+        if(slice.length===0) continue;
+        const cv=drawLogbookPage(slice, p+1, totalPdf, sorted.length);
+        let jpegB64="";
+        try{ jpegB64=cv.toDataURL("image/jpeg",0.88); }
+        catch(e){ throw new Error("canvas"); }
+        if(!jpegB64 || jpegB64.length<1000) throw new Error("canvas-empty");
+        pages.push({w:cv.width, h:cv.height, jpegB64});
+      }
+      if(pages.length===0) throw new Error("empty");
+      if(pages.length!==totalPdf) throw new Error("page-count");
+      const pdfBytes=buildPdf(pages);
+      if(!pdfBytes || pdfBytes.length<1000) throw new Error("pdf-empty");
+      if(isNative()){
+        const ok=await saveFileNative(bytesToB64(pdfBytes), name, "دفترچه دیالیز ("+sorted.length+" رکورد، "+totalPdf+" صفحه)");
+        if(ok) toastMsg("آماده شد — "+toFa(totalPdf)+" صفحه، محل ذخیره را انتخاب کنید ✓");
+        else toastMsg("استخراج ناموفق بود");
+      }else{
+        downloadBlobFallback(new Blob([pdfBytes],{type:"application/pdf"}), name);
+        toastMsg("PDF دانلود شد ("+toFa(totalPdf)+" صفحه) ✓");
+      }
+    }catch(err){ toastMsg("ساخت PDF ناموفق بود"); }
+  });
+
+  // --- Export / Import data for other devices ---
+  // .dializ extension = tap-to-open on Android (generic .json never offers our app).
+  // File content is still JSON, so old .json backups keep importing fine.
+  function backupFileName(){
+    const t=new Date(); const tj=g2j(t.getFullYear(),t.getMonth()+1,t.getDate());
+    return "dialysis-backup-"+tj.jy+"-"+pad2(tj.jm)+"-"+pad2(tj.jd)+".dializ";
+  }
+  async function doExport(){
+    if(entries.length===0){ toastMsg("رکوردی برای استخراج نیست"); return; }
+    const payload=JSON.stringify({app:"dialysis-paper-logbook",version:1,exportedAt:new Date().toISOString(),entries},null,1);
+    const defName=backupFileName();
+    // Inside the app: save to cache, then the share sheet asks WHERE
+    // (Downloads / Files / send to the other phone via WhatsApp, Bluetooth...).
+    if(isNative()){
+      try{
+        await saveFileNative(bytesToB64(new TextEncoder().encode(payload)), defName, "فایل پشتیبان دفترچه دیالیز — روی فایل بزنید و با دفترچه دیالیز باز کنید");
+        toastMsg("آماده شد — محل ذخیره را انتخاب کنید ✓");
+      }catch(err){ toastMsg("استخراج ناموفق بود"); }
+      return;
+    }
+    // Desktop browser: native save-location picker when available
+    try{
+      if(window.showSaveFilePicker){
+        const handle=await window.showSaveFilePicker({suggestedName:defName,types:[{description:"Dialysis backup",accept:{"application/json":[".dializ",".json"]}}]});
+        const w=await handle.createWritable(); await w.write(payload); await w.close();
+        toastMsg("فایل ذخیره شد ✓"); return;
+      }
+    }catch(err){ if(err&&err.name==="AbortError") return; /* fall through to download */ }
+    downloadBlobFallback(new Blob([payload],{type:"application/json;charset=utf-8"}), defName);
+    toastMsg("دانلود شد ✓");
+  }
+  function parseBackupText(text){
+    const obj=JSON.parse(String(text));
+    const arr=Array.isArray(obj)?obj:obj.entries;
+    if(!Array.isArray(arr)) throw new Error("bad");
+    return arr;
+  }
+  function previewMerge(arr){
+    const have=new Set(entries.map(x=>String(x.id)));
+    const valid=[];
+    let dup=0, invalid=0;
+    arr.forEach(raw=>{
+      const n=normalizeEntry(raw&&typeof raw==="object"?{...raw}:null);
+      if(!n){ invalid++; return; }
+      if(have.has(String(n.id))){ dup++; return; }
+      have.add(String(n.id)); valid.push(n);
+    });
+    return { valid:valid, fresh:valid.length, dup:dup, invalid:invalid, total:arr.length };
+  }
+  function applyMerge(valid){
+    const have=new Set(entries.map(x=>String(x.id)));
+    let added=0, skipped=0;
+    valid.forEach(n=>{
+      if(have.has(String(n.id))){ skipped++; return; }
+      have.add(String(n.id)); entries.push(n); added++;
+    });
+    if(added>0){
+      entries.sort((x,y)=>(y.sortKey||0)-(x.sortKey||0));
+      currentPage=1; save(entries); render(true); showTab("list");
+    }
+    return { added:added, skipped:skipped };
+  }
+  function mergeNow(arr){
+    const p=previewMerge(arr);
+    const r=applyMerge(p.valid);
+    const skipped=p.dup+p.invalid;
+    let msg;
+    if(r.added>0){
+      msg="وارد شد: "+toFa(r.added)+" رکورد ✓";
+      if(skipped>0) msg+=" ("+toFa(skipped)+" تکراری رد شد)";
+    }else{
+      msg="رکورد جدیدی نبود";
+    }
+    toastMsg(msg);
+  }
+  document.getElementById("optExport").addEventListener("click",()=>{ closeSheet(); doExport(); });
+  const importFile=document.getElementById("importFile");
+  document.getElementById("optImport").addEventListener("click",()=>{ closeSheet(); importFile.click(); });
+  importFile.addEventListener("change",()=>{
+    const f=importFile.files&&importFile.files[0]; importFile.value="";
+    if(!f) return;
+    if(f.size>5*1024*1024){ toastMsg("فایل خیلی بزرگ است"); return; }
+    const rd=new FileReader();
+    rd.onload=()=>{
+      try{
+        mergeNow(parseBackupText(rd.result));
+      }catch(e){ toastMsg("فایل معتبر نیست"); }
+    };
+    rd.onerror=()=>toastMsg("خواندن فایل ناموفق بود");
+    rd.readAsText(f);
+  });
+
+  // --- Tap-to-open: file tapped in WhatsApp / Downloads / Files ---
+  // Native MainActivity reads the shared file and fires this event with its text.
+  // We preview it, then show ONE big confirm so elderly users just tap "اضافه کن".
+  const receiveModal=document.getElementById("receiveModal");
+  const receiveCount=document.getElementById("receiveCount");
+  const receiveName=document.getElementById("receiveName");
+  let pendingReceive=null;
+  function closeReceive(){ receiveModal.style.display="none"; pendingReceive=null; }
+  function openReceive(preview, name){
+    pendingReceive=preview;
+    let line="تعداد در فایل: "+toFa(preview.total)+" — جدید: "+toFa(preview.fresh);
+    let sub="";
+    if(preview.dup>0) sub+="تکراری رد می‌شود: "+toFa(preview.dup);
+    if(preview.invalid>0) sub+=(sub?" • ":"")+"خراب رد می‌شود: "+toFa(preview.invalid);
+    if(!sub) sub="همه رکوردها سالم‌اند";
+    if(preview.fresh===0) line="رکورد جدیدی نیست ("+toFa(preview.total)+" رکورد تکراری)";
+    receiveCount.innerHTML=line+"<small>"+sub+"</small>";
+    receiveName.textContent=name||"";
+    if(editingId){ editingId=null; editingField=null; render(true); }
+    closeSheet(); pdfModal.style.display="none";
+    showTab("list");
+    receiveModal.style.display="flex";
+  }
+  document.getElementById("receiveCancel").addEventListener("click",()=>{ closeReceive(); toastMsg("انصراف داده شد"); });
+  receiveModal.addEventListener("click",(ev)=>{ if(ev.target===receiveModal) closeReceive(); });
+  document.getElementById("receiveConfirm").addEventListener("click",()=>{
+    if(!pendingReceive){ closeReceive(); return; }
+    const r=applyMerge(pendingReceive.valid);
+    const skipped=pendingReceive.dup+pendingReceive.invalid;
+    closeReceive();
+    let msg;
+    if(r.added>0){
+      msg="وارد شد: "+toFa(r.added)+" رکورد ✓";
+      if(skipped>0) msg+=" ("+toFa(skipped)+" تکراری رد شد)";
+    }else{
+      msg="رکورد جدیدی نبود";
+    }
+    toastMsg(msg);
+  });
+  function dializHash(s){
+    var h=5381; var n=Math.min(s.length,3000);
+    for(var i=0;i<n;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; }
+    return s.length+":"+(h|0);
+  }
+  var dializLastHash=null, dializLastTime=0;
+  function handleIncomingContent(text, name){
+    if(text===null||text===undefined) return;
+    const s=String(text);
+    if(!s||s.length<2) return;
+    if(s.length>5*1024*1024){ toastMsg("فایل خیلی بزرگ است"); return; }
+    // Native re-sends a few times (cold start via tap can arrive before the
+    // page finishes loading). Ignore repeats of the same file for 10 seconds.
+    try{
+      var hh=dializHash(s), now=Date.now();
+      if(dializLastHash===hh&&(now-dializLastTime)<10000) return;
+      if(receiveModal.style.display==="flex"){ dializLastHash=hh; dializLastTime=now; return; }
+      dializLastHash=hh; dializLastTime=now;
+    }catch(e){}
+    try{
+      const arr=parseBackupText(s);
+      if(arr.length===0){ toastMsg("فایل خالی است"); return; }
+      const p=previewMerge(arr);
+      openReceive(p, name||"");
+    }catch(e){ toastMsg("فایل معتبر نیست"); }
+  }
+  function takePendingIntoHandler(ev){
+    try{
+      let content=null, name="";
+      if(ev&&ev.detail&&typeof ev.detail.content==="string"){ content=ev.detail.content; name=ev.detail.name||""; }
+      else if(typeof window.__dializPendingContent==="string"){ content=window.__dializPendingContent; name=window.__dializPendingName||""; }
+      window.__dializPendingContent=null; window.__dializPendingName=null;
+      if(content!==null) handleIncomingContent(content, name);
+    }catch(e){}
+  }
+  window.addEventListener("dializ-file-open",takePendingIntoHandler);
+  document.addEventListener("visibilitychange",()=>{
+    try{
+      if(!document.hidden&&typeof window.__dializPendingContent==="string"&&window.__dializPendingContent){
+        const c=window.__dializPendingContent, n=window.__dializPendingName||"";
+        window.__dializPendingContent=null; window.__dializPendingName=null;
+        handleIncomingContent(c, n);
+      }
+    }catch(e){}
+  });
+
+  try{
+    fillSelects(); updatePreview(); fitScreen(); showTab("list"); render(true);
+    // Cold start via tap-to-open: native delivers on page-load + retries at
+    // 0.8s / 2s / 4s, so poll a few times instead of checking just once.
+    try{
+      [400,1500,3000,5000].forEach(ms=>setTimeout(()=>{
+        try{
+          if(typeof window.__dializPendingContent==="string"&&window.__dializPendingContent){
+            const c=window.__dializPendingContent, n=window.__dializPendingName||"";
+            window.__dializPendingContent=null; window.__dializPendingName=null;
+            handleIncomingContent(c, n);
+          }
+        }catch(e){}
+      },ms));
+    }catch(e){}
+  }catch(e){ showErr("راه‌اندازی: "+(e&&e.message?e.message:e)); }
+})();
+</script>
+</body>
+</html>

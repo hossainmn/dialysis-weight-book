@@ -1,0 +1,8 @@
+{
+  "appId": "com.example.dializpaper",
+  "appName": "Daftarche Dializ",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}

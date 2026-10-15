@@ -1,0 +1,13 @@
+Daftarche Dializ v1.7 - what changed vs v1.6
+=============================================
+- Icon shrunk to fit circle masks: white book glyph is now ~78% of its old size
+  (47% of icon height, centered on #1D5286), so round launchers show it with blue
+  padding on all sides instead of touching the edge.
+  Regenerated all mipmap-*/ic_launcher.png, ic_launcher_round.png (blue circle),
+  ic_launcher_foreground.png (glyph on transparency over blue background).
+- Everything from v1.6 kept: no liquid overscroll, versionCode scheme, release key.
+- versionCode 8, versionName 1.7, same package com.example.dializpaper, same release key.
+  Installs as a normal update over v1.6 release (same cert). Debug-key installs
+  still need the one-time backup > uninstall > install path (see UPDATE-FIX-README.txt).
+- Upload file for Play: daftarche-dializ-v1.7.aab. Test file: daftarche-dializ-v1.7.apk.
+- Store listing icon: logo-padded-1024.png (project root) matches the new launcher look.
